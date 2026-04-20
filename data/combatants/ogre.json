@@ -1,0 +1,21 @@
+{
+  "name": "Ogre",
+  "max_hp": 59,
+  "ac": 11,
+  "proficiency": 2,
+  "str_save": 4,
+  "dex_save": -1,
+  "con_save": 3,
+  "wis_save": -2,
+  "int_save": -3,
+  "cha_save": -2,
+  "cr": 2,
+  "num_legendary_actions": 0,
+  "combatant_type": "giant",
+  "size": "Large",
+  "speed": 40,
+  "actions": [
+    "Ogre - Greatclub"
+  ],
+  "innate_effects": []
+}

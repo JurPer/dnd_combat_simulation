@@ -1,0 +1,22 @@
+{
+  "name": "Cleric",
+  "max_hp": 27,
+  "ac": 18,
+  "proficiency": 3,
+  "str_save": 1,
+  "dex_save": 0,
+  "con_save": 2,
+  "wis_save": 4,
+  "int_save": 1,
+  "cha_save": 2,
+  "cr": 4,
+  "num_legendary_actions": 0,
+  "combatant_type": "humanoid",
+  "size": "Medium",
+  "speed": 30,
+  "actions": [
+    "Cleric - Mace",
+    "Cleric - Healing Word"
+  ],
+  "innate_effects": []
+}

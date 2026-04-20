@@ -1,0 +1,15 @@
+{
+  "kind": "Heal",
+  "name": "Cleric - Healing Word",
+  "action_type": "Heal",
+  "description": "Restores hit points to an ally.",
+  "recharge_percentile": 0.0,
+  "stat_bonus": "WIS",
+  "is_legendary": false,
+  "legendary_action_cost": 0,
+  "effects": [],
+  "dice": {
+    "4": 1
+  },
+  "num_targets": 1
+}

@@ -1,0 +1,22 @@
+{
+  "kind": "PhysicalSingleAttack",
+  "name": "Goblin - Scimitar",
+  "action_type": "Attack",
+  "description": "Melee Weapon Attack.",
+  "recharge_percentile": 0.0,
+  "stat_bonus": "DEX",
+  "is_legendary": false,
+  "legendary_action_cost": 0,
+  "effects": [],
+  "multi_attack": 1,
+  "is_aoe": false,
+  "aoe_type": null,
+  "damage_type": "slashing",
+  "save_stat": null,
+  "save_dc": null,
+  "dice": {
+    "6": 1
+  },
+  "bonus_to_hit": 4,
+  "bonus_to_damage": 2
+}

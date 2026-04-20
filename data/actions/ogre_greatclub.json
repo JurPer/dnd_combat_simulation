@@ -1,0 +1,22 @@
+{
+  "kind": "PhysicalSingleAttack",
+  "name": "Ogre - Greatclub",
+  "action_type": "Attack",
+  "description": "Massive bludgeoning strike.",
+  "recharge_percentile": 0.0,
+  "stat_bonus": "STR",
+  "is_legendary": false,
+  "legendary_action_cost": 0,
+  "effects": [],
+  "multi_attack": 1,
+  "is_aoe": false,
+  "aoe_type": null,
+  "damage_type": "bludgeoning",
+  "save_stat": null,
+  "save_dc": null,
+  "dice": {
+    "8": 2
+  },
+  "bonus_to_hit": 6,
+  "bonus_to_damage": 4
+}

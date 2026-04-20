@@ -1,0 +1,22 @@
+{
+  "kind": "SpellSave",
+  "name": "Adult Black Dragon - Acid Breath",
+  "action_type": "Attack",
+  "description": "The dragon exhales acid in a line.",
+  "recharge_percentile": 0.66,
+  "stat_bonus": null,
+  "is_legendary": false,
+  "legendary_action_cost": 0,
+  "effects": [],
+  "multi_attack": 1,
+  "is_aoe": true,
+  "aoe_type": "60 ft. line",
+  "damage_type": "acid",
+  "save_stat": "DEX",
+  "save_dc": 18,
+  "dice": {
+    "8": 11
+  },
+  "bonus_to_hit": 0,
+  "bonus_to_damage": 0
+}

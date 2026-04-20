@@ -1,0 +1,24 @@
+{
+  "kind": "PhysicalSingleAttack",
+  "name": "Adult Black Dragon - Bite",
+  "action_type": "Attack",
+  "description": "Melee Weapon Attack.",
+  "recharge_percentile": 0.0,
+  "stat_bonus": "STR",
+  "is_legendary": false,
+  "legendary_action_cost": 0,
+  "effects": [
+    "Poisoned Bite"
+  ],
+  "multi_attack": 1,
+  "is_aoe": false,
+  "aoe_type": null,
+  "damage_type": "piercing",
+  "save_stat": null,
+  "save_dc": null,
+  "dice": {
+    "10": 2
+  },
+  "bonus_to_hit": 8,
+  "bonus_to_damage": 6
+}

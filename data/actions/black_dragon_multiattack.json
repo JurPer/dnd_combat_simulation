@@ -1,0 +1,16 @@
+{
+  "kind": "ComboAttack",
+  "name": "Adult Black Dragon - Multiattack",
+  "action_type": "Attack",
+  "description": "The dragon makes one bite attack and two claw attacks.",
+  "recharge_percentile": 0.0,
+  "stat_bonus": null,
+  "is_legendary": false,
+  "legendary_action_cost": 0,
+  "effects": [],
+  "components": [
+    "Adult Black Dragon - Bite",
+    "Adult Black Dragon - Claw",
+    "Adult Black Dragon - Claw"
+  ]
+}

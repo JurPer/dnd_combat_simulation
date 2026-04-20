@@ -1,5 +1,4 @@
 import axios from 'axios';
-// import * as Cookies from "js-cookie";
 axios.defaults.xsrfHeaderName = "X-CSRFToken";
 
 
@@ -15,9 +14,12 @@ const argsToForm = (args) => {
 
 const http = (url, method, args, returnData=true) => {
   let data = args ? argsToForm(args) : undefined;
-  // TODO: Deal with the CSRF token?
-  let prefix = window.location.hostname === 'localhost' ? 'http://localhost:8000' : 'https://api.dndfightsimulator.com'
-  console.log(prefix)
+  let prefix = process.env.REACT_APP_API_URL;
+  if (!prefix) {
+    prefix = window.location.hostname === 'localhost'
+      ? 'http://localhost:8000'
+      : window.location.origin
+  }
   return axios({
     method: method,
     url: prefix + url,

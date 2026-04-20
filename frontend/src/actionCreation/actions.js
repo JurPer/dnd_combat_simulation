@@ -122,13 +122,13 @@ export const createAction = (actionType) => (dispatch, getState) => {
   if (actionType === "AttackAgainstAC" && actionCreationReducer.spellOrAttack === "Attack") {
     actionType = "PhysicalSingleAttack";
   }
-  else if (actionType === "AttackAgainstAC" && actionCreationReducer.spellOrAttack === "Attack") {
+  else if (actionType === "AttackAgainstAC" && actionCreationReducer.spellOrAttack === "Spell") {
     actionType = "SpellSingleAttack";
   }
   else if (actionType === "AttackWithSave" && actionCreationReducer.doesHalfDamageOnFailure) {
     actionType = "SpellSave";
   }
-  else if (actionType === "AttackWithSave" && actionCreationReducer.doesHalfDamageOnFailure) {
+  else if (actionType === "AttackWithSave" && !actionCreationReducer.doesHalfDamageOnFailure) {
     actionType = "SpellSingleAttack";
   }
 

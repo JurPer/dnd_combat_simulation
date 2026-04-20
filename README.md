@@ -1,22 +1,61 @@
-# D&D 5e Combat Simulator
+# D&D Combat Simulator
 
-## Version 0.1
+This project now runs with:
 
-# Setup
-### Requirements to run locally:
-<ol>
-  <li>Docker: https://www.docker.com/products/docker-desktop</li>
-</ol>
+- a React frontend in `frontend/`
+- a FastAPI backend in `backend/`
+- JSON-backed storage in `data/`
 
-### Steps to set up
-<ol>
-  <li>Clone repo to local</li>
-  <li>cd into directory</li>
-  <li>Edit the secret_template.env - each line will tell you what to put in. After, rename it to secret.env. </li>
-  <li>Run: "docker-compose build" - this should build both the frontend and backend environments for you. </li>
-  <li>Run: "docker-compose run api python3 manage.py migrate"</li>
-  <li>Go to: https://github.com/ceryliae/DnDAppFiles/blob/master/Bestiary/Monster%20Manual%20Bestiary.xml and download that file. Put it in the xml_data/data directory</li>
-  <li>Run "docker-compose run api python3 manage.py data_setup"</li>
-  <li>Run "docker-compose up"</li>
-  <li>Head to localhost:3000/ to view the app!</li>
-</ol>
+## Local setup
+
+### Backend
+
+1. Create and activate a Python virtual environment.
+
+```bash
+.\.venv\Scripts\Activate.ps1
+```
+
+2. Install backend dependencies:
+
+```bash
+pip install -r reqs.txt
+```
+
+3. Start the API:
+
+```bash
+uvicorn backend.api.main:app --reload --port 8000
+```
+
+### Frontend
+
+1. Install frontend dependencies:
+
+```bash
+cd frontend
+npm install
+```
+
+2. Start the frontend:
+
+```bash
+npm start
+```
+
+The frontend runs on `http://localhost:3000` and talks to the API on `http://localhost:8000`.
+
+## Data
+
+Combatants, actions, effects, and saved battles are stored in JSON:
+
+- `data/combatants`
+- `data/actions`
+- `data/effects`
+- `data/battles`
+
+## Notes
+
+- Docker is no longer required.
+- Django and SQLite are no longer required for runtime.
+- `scripts/export_from_django.py` is included only as a migration helper for old SQLite data.
