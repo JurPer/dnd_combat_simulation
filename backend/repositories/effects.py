@@ -25,13 +25,19 @@ class EffectRepository(JsonDirectoryRepository):
 
     def create(self, **kwargs):
         damage_dice = kwargs.get("damage_dice")
-        parsed_damage_dice = damage_dice if isinstance(damage_dice, dict) else parse_dice_str(damage_dice)
+        parsed_damage_dice = (
+            damage_dice
+            if isinstance(damage_dice, dict)
+            else parse_dice_str(damage_dice)
+        )
         effect, msg = create_effect(
             name=kwargs["name"],
             effect_type=kwargs["effect_type"],
             max_turns=int(kwargs["max_turns"]),
             save_stat=kwargs.get("save_stat"),
-            save_dc=int(kwargs["save_dc"]) if kwargs.get("save_dc") not in (None, "") else None,
+            save_dc=int(kwargs["save_dc"])
+            if kwargs.get("save_dc") not in (None, "")
+            else None,
             damage_dice=parsed_damage_dice,
         )
         if effect is None:
@@ -50,5 +56,7 @@ class EffectRepository(JsonDirectoryRepository):
             max_turns=payload.get("max_turns", -1),
             save_stat=payload.get("save_stat"),
             save_dc=payload.get("save_dc"),
-            damage_dice={int(k): v for k, v in (payload.get("damage_dice") or {}).items()},
+            damage_dice={
+                int(k): v for k, v in (payload.get("damage_dice") or {}).items()
+            },
         )

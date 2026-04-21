@@ -17,7 +17,10 @@ class JsonDirectoryRepository:
         return self.directory / f"{slugify(name)}.json"
 
     def _list_payloads(self):
-        return [json.loads(path.read_text(encoding="utf-8")) for path in sorted(self.directory.glob("*.json"))]
+        return [
+            json.loads(path.read_text(encoding="utf-8"))
+            for path in sorted(self.directory.glob("*.json"))
+        ]
 
     def _write_payload(self, name, payload):
         path = self._path_for_name(name)

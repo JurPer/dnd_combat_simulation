@@ -33,7 +33,11 @@ class CombatantRepository(JsonDirectoryRepository):
             return msg
         if self.exists(combatant.name):
             return "Combatant needs a unique name"
-        missing_actions = [name for name in combatant.action_names if not self.action_repository.exists(name)]
+        missing_actions = [
+            name
+            for name in combatant.action_names
+            if not self.action_repository.exists(name)
+        ]
         if missing_actions:
             return f"Could not find action with name {missing_actions[0]}"
         self.save(combatant)
@@ -66,6 +70,10 @@ class CombatantRepository(JsonDirectoryRepository):
             action_names=list(payload.get("actions", [])),
             innate_effect_names=list(payload.get("innate_effects", [])),
         )
-        combatant.actions = [self.action_repository.get(name) for name in combatant.action_names]
-        combatant.innate_effects = [self.effect_repository.get(name) for name in combatant.innate_effect_names]
+        combatant.actions = [
+            self.action_repository.get(name) for name in combatant.action_names
+        ]
+        combatant.innate_effects = [
+            self.effect_repository.get(name) for name in combatant.innate_effect_names
+        ]
         return combatant
