@@ -58,4 +58,3 @@ Combatants, actions, effects, and saved battles are stored in JSON:
 
 - Docker is no longer required.
 - Django and SQLite are no longer required for runtime.
-- `scripts/export_from_django.py` is included only as a migration helper for old SQLite data.
