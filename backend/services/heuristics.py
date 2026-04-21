@@ -1,5 +1,6 @@
 import random
 from dataclasses import dataclass
+from typing import Optional
 
 
 class TargetSelectionHeuristic:
@@ -52,8 +53,8 @@ class LowestHealthPercentageBelowThreshold(TargetSelectionHeuristic):
 
 @dataclass
 class HeuristicContainer:
-    attack_selection: TargetSelectionHeuristic = None
-    heal_selection: TargetSelectionHeuristic = None
+    attack_selection: Optional[TargetSelectionHeuristic] = None
+    heal_selection: Optional[TargetSelectionHeuristic] = None
 
 
 HEURISTIC_MAPPING = {

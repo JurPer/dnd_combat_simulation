@@ -12,7 +12,7 @@ class Simulator:
             for combatant in self.pcs + self.enemies
             if combatant.legendary_actions
         ]
-        self.battle_order = None
+        self.battle_order = []
 
         for pc in self.pcs:
             pc.enemies = self.enemies
@@ -23,18 +23,32 @@ class Simulator:
 
     def calc_initiative(self):
         pc_initiative = [(pc, d20() + pc.saves["DEX"]) for pc in self.pcs]
-        enemy_initiative = [(enemy, d20() + enemy.saves["DEX"]) for enemy in self.enemies]
+        enemy_initiative = [
+            (enemy, d20() + enemy.saves["DEX"]) for enemy in self.enemies
+        ]
         self.battle_order = [
             (turn[0], 0 if turn[0] in self.pcs else 1)
-            for turn in sorted(pc_initiative + enemy_initiative, key=lambda value: value[1], reverse=True)
+            for turn in sorted(
+                pc_initiative + enemy_initiative,
+                key=lambda value: value[1],
+                reverse=True,
+            )
         ]
 
     def run_round(self, heuristic):
         for creature, team in list(self.battle_order):
             if creature.hp <= 0:
                 continue
-            allies = [entry[0] for entry in self.battle_order if entry[1] == team and entry[0].hp > 0]
-            enemies = [entry[0] for entry in self.battle_order if entry[1] != team and entry[0].hp > 0]
+            allies = [
+                entry[0]
+                for entry in self.battle_order
+                if entry[1] == team and entry[0].hp > 0
+            ]
+            enemies = [
+                entry[0]
+                for entry in self.battle_order
+                if entry[1] != team and entry[0].hp > 0
+            ]
             if not enemies:
                 break
             creature.take_turn(allies, enemies, heuristic)
@@ -43,7 +57,9 @@ class Simulator:
                     legendary_action_user.enemies, heuristic
                 )
 
-        dead_enemies = [combatant.name for combatant in self.enemies if combatant.hp <= 0]
+        dead_enemies = [
+            combatant.name for combatant in self.enemies if combatant.hp <= 0
+        ]
         dead_pcs = [combatant.name for combatant in self.pcs if combatant.hp <= 0]
 
         self.battle_order = [entry for entry in self.battle_order if entry[0].hp > 0]
