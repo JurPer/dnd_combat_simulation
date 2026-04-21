@@ -1,9 +1,0 @@
-{
-  "name": "Poisoned Bite",
-  "effect_type": "Poisoned Effect",
-  "description": "Poisons if the target fails a DC 12 CON save",
-  "max_turns": 2,
-  "save_stat": "CON",
-  "save_dc": 12,
-  "damage_dice": null
-}
