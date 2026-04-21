@@ -1,6 +1,6 @@
 from dataclasses import dataclass, field
 from math import ceil
-from typing import List, Optional
+from typing import Any, Optional, TypedDict
 
 from backend.domain.constants import (
     AOE_PERCENT_HIT_MAP,
@@ -8,6 +8,29 @@ from backend.domain.constants import (
     PARALYZE_EFFECT_TYPE,
 )
 from backend.domain.dice import calc_roll, d20, serialize_dice
+
+
+class ActionKwargs(TypedDict):
+    name: str
+    action_type: str
+    description: Optional[str]
+    recharge_percentile: float
+    stat_bonus: Optional[str]
+    is_legendary: bool
+    legendary_action_cost: int
+    effect_names: list[str]
+
+
+class AttackKwargs(ActionKwargs):
+    multi_attack: int
+    is_aoe: bool
+    aoe_type: Optional[str]
+    damage_type: str
+    save_stat: Optional[str]
+    save_dc: Optional[int]
+    dice: dict
+    bonus_to_hit: int
+    bonus_to_damage: int
 
 
 def calc_attack_roll(attacker, target):
@@ -29,19 +52,19 @@ class Action:
     stat_bonus: Optional[str] = None
     is_legendary: bool = False
     legendary_action_cost: int = 0
-    effect_names: List[str] = field(default_factory=list)
-    effects: List = field(default_factory=list)
+    effect_names: list[str] = field(default_factory=list)
+    effects: list[Any] = field(default_factory=list)
     ready: bool = field(default=True, init=False)
     num_available: int = field(default=-1, init=False)
 
-    def instantiate(self):
+    def instantiate(self) -> "Action":
         copy = self.copy()
         copy.ready = True
         copy.num_available = -1
         copy.effects = [effect.instantiate() for effect in self.effects]
         return copy
 
-    def copy(self):
+    def copy(self) -> "Action":
         return Action(
             name=self.name,
             action_type=self.action_type,
@@ -60,7 +83,7 @@ class Action:
         if random() >= self.recharge_percentile:
             self.ready = True
 
-    def jsonify(self, current_info=None):
+    def jsonify(self, current_info: Optional[dict[str, Any]] = None) -> dict[str, Any]:
         current_info = current_info or {}
         return {
             **current_info,
@@ -71,7 +94,7 @@ class Action:
             "description": self.description,
         }
 
-    def to_storage(self):
+    def to_storage(self) -> dict[str, Any]:
         return {
             "kind": "Action",
             "name": self.name,
@@ -97,7 +120,14 @@ class SingleAttack(Action):
     bonus_to_hit: int = 0
     bonus_to_damage: int = 0
 
-    def copy(self):
+    def instantiate(self) -> "SingleAttack":
+        copy = self.copy()
+        copy.ready = True
+        copy.num_available = -1
+        copy.effects = [effect.instantiate() for effect in self.effects]
+        return copy
+
+    def copy(self) -> "SingleAttack":
         return type(self)(
             name=self.name,
             action_type=self.action_type,
@@ -119,7 +149,7 @@ class SingleAttack(Action):
             bonus_to_damage=self.bonus_to_damage,
         )
 
-    def calc_expected_enemies_hit(self, num_enemies):
+    def calc_expected_enemies_hit(self, num_enemies: int) -> int:
         if self.is_aoe and self.aoe_type:
             return AOE_PERCENT_HIT_MAP[self.aoe_type](num_enemies)
         return self.multi_attack
@@ -138,12 +168,12 @@ class SingleAttack(Action):
     def log_attack(self, attacker, target, damage):
         return None
 
-    def jsonify(self, current_info=None):
+    def jsonify(self, current_info: Optional[dict[str, Any]] = None) -> dict[str, Any]:
         info = {"expDamage": self.calc_expected_damage()}
         return super().jsonify({**(current_info or {}), **info})
 
-    def to_storage(self):
-        base = super().to_storage()
+    def to_storage(self) -> dict[str, Any]:
+        base: dict[str, Any] = super().to_storage()
         base.update(
             {
                 "multi_attack": self.multi_attack,
@@ -175,11 +205,13 @@ class PhysicalSingleAttack(SingleAttack):
             roll_damage = calc_roll(self.dice)
             if die_roll == 20 or target.check_for_effect(PARALYZE_EFFECT_TYPE):
                 roll_damage *= 2
-            damage = roll_damage + attacker.saves[self.stat_bonus] + self.bonus_to_damage
+            damage = (
+                roll_damage + attacker.saves[self.stat_bonus] + self.bonus_to_damage
+            )
         target.take_damage(damage, self.damage_type)
         self.log_attack(attacker, target, damage)
 
-    def to_storage(self):
+    def to_storage(self) -> dict[str, Any]:
         base = super().to_storage()
         base["kind"] = "PhysicalSingleAttack"
         return base
@@ -205,7 +237,7 @@ class SpellSingleAttack(SingleAttack):
         target.take_damage(damage, self.damage_type)
         self.log_attack(attacker, target, damage)
 
-    def to_storage(self):
+    def to_storage(self) -> dict[str, Any]:
         base = super().to_storage()
         base["kind"] = "SpellSingleAttack"
         return base
@@ -221,7 +253,7 @@ class SpellSave(SingleAttack):
         target.take_damage(damage, self.damage_type)
         self.log_attack(attacker, target, damage)
 
-    def to_storage(self):
+    def to_storage(self) -> dict[str, Any]:
         base = super().to_storage()
         base["kind"] = "SpellSave"
         return base
@@ -232,7 +264,7 @@ class Heal(Action):
     dice: dict = field(default_factory=dict)
     num_targets: int = 1
 
-    def copy(self):
+    def copy(self) -> "Heal":
         return Heal(
             name=self.name,
             action_type=self.action_type,
@@ -259,12 +291,12 @@ class Heal(Action):
             for max_roll, num_dice in self.dice.items()
         )
 
-    def jsonify(self, current_info=None):
+    def jsonify(self, current_info: Optional[dict[str, Any]] = None) -> dict[str, Any]:
         info = {"expHeal": self.calc_expected_heal()}
         return super().jsonify({**(current_info or {}), **info})
 
-    def to_storage(self):
-        base = super().to_storage()
+    def to_storage(self) -> dict[str, Any]:
+        base: dict[str, Any] = super().to_storage()
         base.update(
             {
                 "kind": "Heal",
@@ -277,17 +309,17 @@ class Heal(Action):
 
 @dataclass
 class ComboAttack(Action):
-    component_names: List[str] = field(default_factory=list)
-    components: List[SingleAttack] = field(default_factory=list)
+    component_names: list[str] = field(default_factory=list)
+    components: list[SingleAttack] = field(default_factory=list)
 
-    def instantiate(self):
+    def instantiate(self) -> "ComboAttack":
         copy = self.copy()
         copy.ready = True
         copy.num_available = -1
         copy.components = [component.instantiate() for component in self.components]
         return copy
 
-    def copy(self):
+    def copy(self) -> "ComboAttack":
         return ComboAttack(
             name=self.name,
             action_type=self.action_type,
@@ -303,14 +335,16 @@ class ComboAttack(Action):
         )
 
     def calc_expected_damage(self, num_enemies=1):
-        return sum(component.calc_expected_damage(num_enemies) for component in self.components)
+        return sum(
+            component.calc_expected_damage(num_enemies) for component in self.components
+        )
 
     def to_storage(self):
         base = super().to_storage()
         base.update({"kind": "ComboAttack", "components": list(self.component_names)})
         return base
 
-    def jsonify(self, current_info=None):
+    def jsonify(self, current_info: Optional[dict[str, Any]] = None) -> dict[str, Any]:
         info = {"expDamage": self.calc_expected_damage()}
         return super().jsonify({**(current_info or {}), **info})
 
@@ -320,24 +354,22 @@ def create_action(action_type, **kwargs):
     if not name:
         return "Action needs a name", None
 
-    is_legendary = str(kwargs.get("is_legendary", "false")).lower() == "true"
-    is_aoe = str(kwargs.get("is_aoe", "false")).lower() == "true"
     effect_names = kwargs.get("effects", [])
     if isinstance(effect_names, str):
         effect_names = [effect_names] if effect_names else []
 
-    base_kwargs = dict(
-        name=name,
-        action_type="Heal" if action_type == "Heal" else "Attack",
-        description=kwargs.get("description"),
-        recharge_percentile=float(kwargs.get("recharge_percentile", 0.0) or 0.0),
-        stat_bonus=kwargs.get("stat_bonus") or None,
-        is_legendary=is_legendary,
-        legendary_action_cost=int(kwargs.get("legendary_action_cost", 0) or 0),
-        effect_names=effect_names,
-    )
+    base_kwargs: ActionKwargs = {
+        "name": name,
+        "action_type": "Heal" if action_type == "Heal" else "Attack",
+        "description": kwargs.get("description"),
+        "recharge_percentile": float(kwargs.get("recharge_percentile", 0.0) or 0.0),
+        "stat_bonus": kwargs.get("stat_bonus") or None,
+        "is_legendary": str(kwargs.get("is_legendary", "false")).lower() == "true",
+        "legendary_action_cost": int(kwargs.get("legendary_action_cost", 0) or 0),
+        "effect_names": effect_names,
+    }
 
-    if is_legendary and base_kwargs["legendary_action_cost"] == 0:
+    if base_kwargs["is_legendary"] and base_kwargs["legendary_action_cost"] == 0:
         return "An action cannot be legendary and have 0 legendary cost", None
 
     if action_type == "Heal":
@@ -350,8 +382,16 @@ def create_action(action_type, **kwargs):
         )
         return "Success", action
 
-    if action_type not in {"PhysicalSingleAttack", "SpellSingleAttack", "SpellSave", "ComboAttack"}:
-        return f"Action.create_action did not receive a valid action_type received {action_type}", None
+    if action_type not in {
+        "PhysicalSingleAttack",
+        "SpellSingleAttack",
+        "SpellSave",
+        "ComboAttack",
+    }:
+        return (
+            f"Action.create_action did not receive a valid action_type received {action_type}",
+            None,
+        )
 
     if action_type == "ComboAttack":
         components = kwargs.get("components", [])
@@ -369,18 +409,20 @@ def create_action(action_type, **kwargs):
     if not kwargs.get("dice"):
         return "dice argument must be provided and formatted correctly", None
 
-    attack_kwargs = dict(
+    attack_kwargs: AttackKwargs = {
         **base_kwargs,
-        multi_attack=int(kwargs.get("multi_attack", 1) or 1),
-        is_aoe=is_aoe,
-        aoe_type=kwargs.get("aoe_type") or None,
-        damage_type=damage_type,
-        save_stat=kwargs.get("save_stat") or None,
-        save_dc=int(kwargs["save_dc"]) if kwargs.get("save_dc") not in (None, "") else None,
-        dice=kwargs["dice"],
-        bonus_to_hit=int(kwargs.get("bonus_to_hit", 0) or 0),
-        bonus_to_damage=int(kwargs.get("bonus_to_damage", 0) or 0),
-    )
+        "multi_attack": int(kwargs.get("multi_attack", 1) or 1),
+        "is_aoe": str(kwargs.get("is_aoe", "false")).lower() == "true",
+        "aoe_type": kwargs.get("aoe_type") or None,
+        "damage_type": damage_type,
+        "save_stat": kwargs.get("save_stat") or None,
+        "save_dc": int(kwargs["save_dc"])
+        if kwargs.get("save_dc") not in (None, "")
+        else None,
+        "dice": kwargs["dice"],
+        "bonus_to_hit": int(kwargs.get("bonus_to_hit", 0) or 0),
+        "bonus_to_damage": int(kwargs.get("bonus_to_damage", 0) or 0),
+    }
 
     if action_type == "PhysicalSingleAttack":
         return "Success", PhysicalSingleAttack(**attack_kwargs)

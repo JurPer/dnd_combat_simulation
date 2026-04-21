@@ -55,7 +55,9 @@ def get_effects():
 
 @app.get("/effectTypes")
 def get_effect_types():
-    return [{"value": effect_type, "label": effect_type} for effect_type in EFFECT_TYPES]
+    return [
+        {"value": effect_type, "label": effect_type} for effect_type in EFFECT_TYPES
+    ]
 
 
 @app.get("/damageTypes")
@@ -81,7 +83,9 @@ def simulate(team1: str = Form(...), team2: str = Form(...)):
 def save_battle(team1: str = Form(...), team2: str = Form(...)):
     if not team1 or not team2:
         return {"msg": "Both teams must have at least 1 combatant!", "battleKey": ""}
-    msg, battle_key = repositories.battles.save_battle(json.loads(team1), json.loads(team2))
+    msg, battle_key = repositories.battles.save_battle(
+        json.loads(team1), json.loads(team2)
+    )
     return {"msg": msg, "battleKey": battle_key}
 
 
@@ -125,9 +129,11 @@ def create_combatant(
         actions=actions,
         cr=1,
     )
-    response = {"msg": msg}
+    response: dict[str, object] = {"msg": msg}
     if msg == "Success":
-        response["combatants"] = [combatant.jsonify() for combatant in repositories.combatants.list()]
+        response["combatants"] = [
+            combatant.jsonify() for combatant in repositories.combatants.list()
+        ]
     return response
 
 
@@ -166,7 +172,10 @@ def create_action(
         aoe_type=aoe_type,
         dice=dice,
     )
-    return {"msg": msg, "actions": [item.jsonify() for item in repositories.actions.list()]}
+    return {
+        "msg": msg,
+        "actions": [item.jsonify() for item in repositories.actions.list()],
+    }
 
 
 @app.post("/createEffect")
@@ -186,7 +195,7 @@ def create_effect(
         save_stat=save_stat,
         max_turns=num_turns,
     )
-    response = {"msg": msg}
+    response: dict[str, object] = {"msg": msg}
     if effect is not None:
         response["effect"] = effect.jsonify()
     return response
@@ -194,4 +203,6 @@ def create_effect(
 
 @app.post("/ddbImport")
 def ddb_import(url: str = Form(...)):
-    return {"msg": "D&D Beyond import is not supported in the migrated JSON backend yet."}
+    return {
+        "msg": "D&D Beyond import is not supported in the migrated JSON backend yet."
+    }
