@@ -1,3 +1,5 @@
+from typing import Optional, TypedDict
+
 from backend.domain.actions import (
     ComboAttack,
     Heal,
@@ -8,6 +10,18 @@ from backend.domain.actions import (
 )
 from backend.domain.dice import parse_dice_str
 from backend.repositories.base import JsonDirectoryRepository
+
+
+class ActionKwargs(TypedDict):
+    name: str
+    action_type: str
+    description: Optional[str]
+    recharge_percentile: float
+    stat_bonus: Optional[str]
+    is_legendary: bool
+    legendary_action_cost: int
+    effect_names: list[str]
+    effects: list
 
 
 class ActionRepository(JsonDirectoryRepository):
@@ -40,7 +54,11 @@ class ActionRepository(JsonDirectoryRepository):
 
     def create(self, action_type, **kwargs):
         kwargs = dict(kwargs)
-        kwargs["dice"] = kwargs["dice"] if isinstance(kwargs.get("dice"), dict) else parse_dice_str(kwargs.get("dice"))
+        kwargs["dice"] = (
+            kwargs["dice"]
+            if isinstance(kwargs.get("dice"), dict)
+            else parse_dice_str(kwargs.get("dice"))
+        )
         effect_names = kwargs.get("effects", [])
         if isinstance(effect_names, str):
             effect_names = [effect_names] if effect_names else []
@@ -52,25 +70,32 @@ class ActionRepository(JsonDirectoryRepository):
         if self.exists(action.name):
             return "Action needs a unique name", None
 
-        missing_effects = [name for name in effect_names if not self.effect_repository.exists(name)]
+        missing_effects = [
+            name for name in effect_names if not self.effect_repository.exists(name)
+        ]
         if missing_effects:
-            return f"Could not find effects with names: {', '.join(missing_effects)}", None
+            return (
+                f"Could not find effects with names: {', '.join(missing_effects)}",
+                None,
+            )
 
         self.save(action)
         return "Success", action
 
     def _from_payload(self, payload, payload_map):
-        base_kwargs = dict(
-            name=payload["name"],
-            action_type=payload.get("action_type", "Attack"),
-            description=payload.get("description"),
-            recharge_percentile=payload.get("recharge_percentile", 0.0),
-            stat_bonus=payload.get("stat_bonus"),
-            is_legendary=payload.get("is_legendary", False),
-            legendary_action_cost=payload.get("legendary_action_cost", 0),
-            effect_names=list(payload.get("effects", [])),
-            effects=[self.effect_repository.get(name) for name in payload.get("effects", [])],
-        )
+        base_kwargs: ActionKwargs = {
+            "name": payload["name"],
+            "action_type": payload.get("action_type", "Attack"),
+            "description": payload.get("description"),
+            "recharge_percentile": payload.get("recharge_percentile", 0.0),
+            "stat_bonus": payload.get("stat_bonus"),
+            "is_legendary": payload.get("is_legendary", False),
+            "legendary_action_cost": payload.get("legendary_action_cost", 0),
+            "effect_names": list(payload.get("effects", [])),
+            "effects": [
+                self.effect_repository.get(name) for name in payload.get("effects", [])
+            ],
+        }
 
         kind = payload["kind"]
         if kind == "PhysicalSingleAttack":
@@ -123,6 +148,9 @@ class ActionRepository(JsonDirectoryRepository):
             return ComboAttack(
                 **base_kwargs,
                 component_names=component_names,
-                components=[self._from_payload(payload_map[name], payload_map) for name in component_names],
+                components=[
+                    self._from_payload(payload_map[name], payload_map)
+                    for name in component_names
+                ],
             )
         raise ValueError(f"Unknown action kind {kind}")
