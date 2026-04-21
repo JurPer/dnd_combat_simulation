@@ -2,7 +2,7 @@ from dataclasses import dataclass, field
 from math import floor
 from typing import List, Optional
 
-from backend.domain.actions import ComboAttack, Heal, SingleAttack
+from backend.domain.actions import ComboAttack, SingleAttack
 from backend.domain.constants import (
     SELF_ADVANTAGE_SET,
     SELF_DISADVANTAGE_SET,
@@ -82,7 +82,11 @@ class Combatant:
             reverse=True,
         )
         self.heals = sorted(
-            [action.instantiate() for action in self.actions if action.action_type == "Heal"],
+            [
+                action.instantiate()
+                for action in self.actions
+                if action.action_type == "Heal"
+            ],
             key=lambda x: x.calc_expected_heal(),
             reverse=True,
         )
@@ -100,7 +104,9 @@ class Combatant:
         self.heuristics = heuristics
         self.applied_effects = [effect.instantiate() for effect in self.innate_effects]
         if applied_effects:
-            self.applied_effects.extend(effect.instantiate() for effect in applied_effects)
+            self.applied_effects.extend(
+                effect.instantiate() for effect in applied_effects
+            )
 
     def _convert_saves_to_dict(self):
         return {
@@ -258,25 +264,38 @@ class Combatant:
 
     def take_damage(self, damage, attack_type):
         for effect in self.applied_effects:
-            if effect.effect_type == TYPE_RESISTANCE_TYPE and effect.name == attack_type:
+            if (
+                effect.effect_type == TYPE_RESISTANCE_TYPE
+                and effect.name == attack_type
+            ):
                 damage *= 0.5
-            if effect.effect_type == TYPE_VULNERABILITY_TYPE and effect.name == attack_type:
-                damage *= 1.5
+            if (
+                effect.effect_type == TYPE_VULNERABILITY_TYPE
+                and effect.name == attack_type
+            ):
+                damage *= 2.0
             if effect.effect_type == TYPE_IMMUNITY_TYPE and effect.name == attack_type:
                 damage = 0
-        self.hp -= damage
+        self.hp -= floor(damage)
 
     def check_for_effect(self, effect_type):
         return any(effect.effect_type == effect_type for effect in self.applied_effects)
 
     def check_for_advantage(self, target):
-        return any(effect.effect_type in SELF_ADVANTAGE_SET for effect in self.applied_effects) or any(
-            effect.effect_type in TARGET_ADVANTAGE_SET for effect in target.applied_effects
+        return any(
+            effect.effect_type in SELF_ADVANTAGE_SET for effect in self.applied_effects
+        ) or any(
+            effect.effect_type in TARGET_ADVANTAGE_SET
+            for effect in target.applied_effects
         )
 
     def check_for_disadvantage(self, target):
-        return any(effect.effect_type in SELF_DISADVANTAGE_SET for effect in self.applied_effects) or any(
-            effect.effect_type in TARGET_DISADVANTAGE_SET for effect in target.applied_effects
+        return any(
+            effect.effect_type in SELF_DISADVANTAGE_SET
+            for effect in self.applied_effects
+        ) or any(
+            effect.effect_type in TARGET_DISADVANTAGE_SET
+            for effect in target.applied_effects
         )
 
     def jsonify(self, jsonify_actions=False):
@@ -288,7 +307,10 @@ class Combatant:
             "ac": self.ac,
             "proficiency": self.proficiency,
             "saves": self._convert_saves_to_dict(),
-            "actions": [action.jsonify() if jsonify_actions else action.name for action in self.actions],
+            "actions": [
+                action.jsonify() if jsonify_actions else action.name
+                for action in self.actions
+            ],
             "innate_effects": [effect.name for effect in self.innate_effects],
             "cr": self.cr,
             "speed": self.speed,

@@ -11,11 +11,7 @@ from backend.domain.constants import (
     POISONED_EFFECT_TYPE,
     PRONE_EFFECT_TYPE,
     RESTRAINED_EFFECT_TYPE,
-    SELF_ADVANTAGE_SET,
-    SELF_DISADVANTAGE_SET,
     STUN_EFFECT_TYPE,
-    TARGET_ADVANTAGE_SET,
-    TARGET_DISADVANTAGE_SET,
     TYPE_IMMUNITY_TYPE,
     TYPE_RESISTANCE_TYPE,
     TYPE_VULNERABILITY_TYPE,
@@ -96,7 +92,11 @@ class Effect:
             TYPE_VULNERABILITY_TYPE,
         }:
             return True
-        if self.effect_type in {STUN_EFFECT_TYPE, PARALYZE_EFFECT_TYPE, DOT_EFFECT_TYPE}:
+        if self.effect_type in {
+            STUN_EFFECT_TYPE,
+            PARALYZE_EFFECT_TYPE,
+            DOT_EFFECT_TYPE,
+        }:
             if self.turns_left <= 0:
                 return False
             if self.save_stat and self.save_dc is not None:
@@ -143,7 +143,9 @@ class Effect:
         }
 
 
-def create_effect(name, effect_type, max_turns, save_stat=None, save_dc=None, damage_dice=None):
+def create_effect(
+    name, effect_type, max_turns, save_stat=None, save_dc=None, damage_dice=None
+):
     if not name:
         return None, "Name must be non-empty"
     if effect_type not in EFFECT_TYPES and effect_type not in {
@@ -173,7 +175,9 @@ def create_effect(name, effect_type, max_turns, save_stat=None, save_dc=None, da
     if effect_type == INVISIBLE_EFFECT_TYPE:
         description = "Makes target invisible"
     elif effect_type == DOT_EFFECT_TYPE:
-        description = f"{damage_dice} damage per turn with a DC {save_dc} {save_stat} save"
+        description = (
+            f"{damage_dice} damage per turn with a DC {save_dc} {save_stat} save"
+        )
     elif effect_type in {
         STUN_EFFECT_TYPE,
         PARALYZE_EFFECT_TYPE,
