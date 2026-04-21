@@ -1,4 +1,4 @@
-import {simpleAction} from '../common/utils'
+import { simpleAction } from '../common/utils'
 import SimulatorSource from '../common/sources/simulatorSource'
 import * as t from './actionTypes'
 
@@ -22,23 +22,23 @@ export const setChosenCombatant = simpleAction(t.SET_CHOSEN_COMBATANT);
 
 
 export const loadCombatant = (c) => (dispatch, getState) => {
-  let combatant = Object.keys(c)[0]
-  dispatch(setChosenCombatant(combatant));
+    let combatant = Object.keys(c)[0]
+    dispatch(setChosenCombatant(combatant));
 
-  SimulatorSource.loadCombatant(combatant).then(({data}) => {
-    let combatantData = data.combatant;
-    dispatch(setCombatantName(combatantData.name));
-    dispatch(setCombatantHP(combatantData.hp));
-    dispatch(setCombatantAC(combatantData.ac));
-    dispatch(setCombatantProficiency(combatantData.proficiency));
-    dispatch(setCombatantStrength(combatantData.saves.STR));
-    dispatch(setCombatantDexterity(combatantData.saves.DEX));
-    dispatch(setCombatantConstitution(combatantData.saves.CON));
-    dispatch(setCombatantIntelligence(combatantData.saves.INT));
-    dispatch(setCombatantWisdom(combatantData.saves.WIS));
-    dispatch(setCombatantCharisma(combatantData.saves.CHA));
-    dispatch(setCombatantCR(combatantData.cr));
-    dispatch(setCombatantActions(combatantData.actions));
-  })
+    SimulatorSource.loadCombatant(combatant).then(({ data }) => {
+        let combatantData = data.combatant;
+        dispatch(setCombatantName(combatantData.name));
+        dispatch(setCombatantHP(combatantData.hp));
+        dispatch(setCombatantAC(combatantData.ac));
+        dispatch(setCombatantProficiency(combatantData.proficiency));
+        dispatch(setCombatantStrength(combatantData.saves.STR));
+        dispatch(setCombatantDexterity(combatantData.saves.DEX));
+        dispatch(setCombatantConstitution(combatantData.saves.CON));
+        dispatch(setCombatantIntelligence(combatantData.saves.INT));
+        dispatch(setCombatantWisdom(combatantData.saves.WIS));
+        dispatch(setCombatantCharisma(combatantData.saves.CHA));
+        dispatch(setCombatantCR(combatantData.cr));
+        dispatch(setCombatantActions(combatantData.actions));
+    })
 }
 

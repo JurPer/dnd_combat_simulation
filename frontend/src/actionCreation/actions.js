@@ -1,6 +1,6 @@
-import {simpleAction} from '../common/utils'
+import { simpleAction } from '../common/utils'
 import SimulatorSource from '../common/sources/simulatorSource'
-import {setAllActions} from "../simulation/actions";
+import { setAllActions } from "../simulation/actions";
 import get from "../common/actionUtils"
 import * as t from './actionTypes'
 
@@ -34,121 +34,121 @@ export const getDamageTypeOptions = get(SimulatorSource.getDamageTypes, setDamag
 export const getAoeTypeOptions = get(SimulatorSource.getAoeTypes, setAoeTypeOptions);
 
 export const shiftIsLegendary = () => (dispatch, getState) => {
-  let {actionCreationReducer} = getState();
-  let {isLegendary} = actionCreationReducer;
-  if (isLegendary) {
-    dispatch(setLegendaryActionCost(0));
-    dispatch(setIsLegendary(false))
-  }
-  else {
-    dispatch(setIsLegendary(true))
-  }
+    let { actionCreationReducer } = getState();
+    let { isLegendary } = actionCreationReducer;
+    if (isLegendary) {
+        dispatch(setLegendaryActionCost(0));
+        dispatch(setIsLegendary(false))
+    }
+    else {
+        dispatch(setIsLegendary(true))
+    }
 };
 
 export const shiftDoesHalfDamageOnFailure = () => (dispatch, getState) => {
-  let {actionCreationReducer} = getState();
-  let {doesHalfDamageOnFailure} = actionCreationReducer;
-  if (doesHalfDamageOnFailure) {
-    dispatch(setDoesHalfDamageOnFailure(false));
-  }
-  else {
-    dispatch(setDoesHalfDamageOnFailure(true));
-  }
+    let { actionCreationReducer } = getState();
+    let { doesHalfDamageOnFailure } = actionCreationReducer;
+    if (doesHalfDamageOnFailure) {
+        dispatch(setDoesHalfDamageOnFailure(false));
+    }
+    else {
+        dispatch(setDoesHalfDamageOnFailure(true));
+    }
 };
 
 export const shiftIsAoe = () => (dispatch, getState) => {
-  let {actionCreationReducer} = getState();
-  let {isAoe} = actionCreationReducer;
-  if (isAoe) {
-    dispatch(setAoeType(""));
-    dispatch(setIsAoe(false));
-  }
-  else {
-    dispatch(setIsAoe(true))
-  }
+    let { actionCreationReducer } = getState();
+    let { isAoe } = actionCreationReducer;
+    if (isAoe) {
+        dispatch(setAoeType(""));
+        dispatch(setIsAoe(false));
+    }
+    else {
+        dispatch(setIsAoe(true))
+    }
 };
 
 export const resetActionCreationErrorMsg = () => (dispatch, getState) => {
-  dispatch(setActionCreationErrorMsg(""));
+    dispatch(setActionCreationErrorMsg(""));
 };
 
 export const addActionEffect = (newEffect) => (dispatch, getState) => {
-  /*
-   * Kind of a hacky way to insert into the list... thought the list should
-   * never be all that long so seems okay. Maybe revisit if this call ends up
-   * taking a lot of time.
-   */
-  let {actionCreationReducer} = getState();
-  let {actionEffects} = actionCreationReducer;
-  for (let key in actionEffects) {
-    if (actionEffects[key].value === newEffect.value) {
-      return
+    /*
+     * Kind of a hacky way to insert into the list... thought the list should
+     * never be all that long so seems okay. Maybe revisit if this call ends up
+     * taking a lot of time.
+     */
+    let { actionCreationReducer } = getState();
+    let { actionEffects } = actionCreationReducer;
+    for (let key in actionEffects) {
+        if (actionEffects[key].value === newEffect.value) {
+            return
+        }
     }
-  }
-  dispatch(setActionEffects(actionEffects.concat(newEffect)));
+    dispatch(setActionEffects(actionEffects.concat(newEffect)));
 }
 
 export const updateActionEffects = (newState) => (dispatch, getState) => {
-  dispatch(setActionEffects(newState));
+    dispatch(setActionEffects(newState));
 }
 
 export const resetTabAttributes = () => (dispatch, getState) => {
-  let {actionCreationReducer} = getState();
-  let ar = actionCreationReducer;
-  ar.actionName = "";
-  ar.statBonus = "";
-  ar.damageType = "";
-  ar.bonusToHit = 0;
-  ar.bonusToDamage = 0;
-  ar.multiAttack = 1;
-  ar.rechargePercentile = 0.0;
-  ar.isLegendary = false;
-  ar.legendaryActionCost = 0;
-  ar.dice = "";
-  ar.isAoe = false;
-  ar.aoeType = "";
-  ar.saveStat = "";
-  ar.saveDC = 8;
-  ar.spellOrAttack = "Attack";
-  ar.actionCreationErrorMsg = "";
-  ar.doesHalfDamageOnFailure = false;
+    let { actionCreationReducer } = getState();
+    let ar = actionCreationReducer;
+    ar.actionName = "";
+    ar.statBonus = "";
+    ar.damageType = "";
+    ar.bonusToHit = 0;
+    ar.bonusToDamage = 0;
+    ar.multiAttack = 1;
+    ar.rechargePercentile = 0.0;
+    ar.isLegendary = false;
+    ar.legendaryActionCost = 0;
+    ar.dice = "";
+    ar.isAoe = false;
+    ar.aoeType = "";
+    ar.saveStat = "";
+    ar.saveDC = 8;
+    ar.spellOrAttack = "Attack";
+    ar.actionCreationErrorMsg = "";
+    ar.doesHalfDamageOnFailure = false;
 };
 
 export const getAllEffects = get(SimulatorSource.getEffects, setAllEffects);
 
 export const createAction = (actionType) => (dispatch, getState) => {
-  let {actionCreationReducer} = getState();
+    let { actionCreationReducer } = getState();
 
-  if (actionType === "AttackAgainstAC" && actionCreationReducer.spellOrAttack === "Attack") {
-    actionType = "PhysicalSingleAttack";
-  }
-  else if (actionType === "AttackAgainstAC" && actionCreationReducer.spellOrAttack === "Spell") {
-    actionType = "SpellSingleAttack";
-  }
-  else if (actionType === "AttackWithSave" && actionCreationReducer.doesHalfDamageOnFailure) {
-    actionType = "SpellSave";
-  }
-  else if (actionType === "AttackWithSave" && !actionCreationReducer.doesHalfDamageOnFailure) {
-    actionType = "SpellSingleAttack";
-  }
+    if (actionType === "AttackAgainstAC" && actionCreationReducer.spellOrAttack === "Attack") {
+        actionType = "PhysicalSingleAttack";
+    }
+    else if (actionType === "AttackAgainstAC" && actionCreationReducer.spellOrAttack === "Spell") {
+        actionType = "SpellSingleAttack";
+    }
+    else if (actionType === "AttackWithSave" && actionCreationReducer.doesHalfDamageOnFailure) {
+        actionType = "SpellSave";
+    }
+    else if (actionType === "AttackWithSave" && !actionCreationReducer.doesHalfDamageOnFailure) {
+        actionType = "SpellSingleAttack";
+    }
 
-  SimulatorSource.createAction(
-    actionCreationReducer.actionName,
-    actionType,
-    actionCreationReducer.statBonus.value,
-    actionCreationReducer.damageType.value,
-    actionCreationReducer.bonusToHit,
-    actionCreationReducer.bonusToDamage,
-    actionCreationReducer.multiAttack,
-    actionCreationReducer.rechargePercentile,
-    actionCreationReducer.isLegendary,
-    actionCreationReducer.legendaryActionCost,
-    actionCreationReducer.saveStat,
-    actionCreationReducer.saveDC,
-    actionCreationReducer.isAoe,
-    actionCreationReducer.aoeType.value,
-    actionCreationReducer.dice).then(({data}) => {
-      dispatch(setAllActions(data.actions));
-      dispatch(setActionCreationErrorMsg(data.msg));
-  })
+    SimulatorSource.createAction(
+        actionCreationReducer.actionName,
+        actionType,
+        actionCreationReducer.statBonus.value,
+        actionCreationReducer.damageType.value,
+        actionCreationReducer.bonusToHit,
+        actionCreationReducer.bonusToDamage,
+        actionCreationReducer.multiAttack,
+        actionCreationReducer.rechargePercentile,
+        actionCreationReducer.isLegendary,
+        actionCreationReducer.legendaryActionCost,
+        actionCreationReducer.saveStat,
+        actionCreationReducer.saveDC,
+        actionCreationReducer.isAoe,
+        actionCreationReducer.aoeType.value,
+        actionCreationReducer.dice).then(({ data }) => {
+            dispatch(setAllActions(data.actions));
+            dispatch(setActionCreationErrorMsg(data.msg));
+        })
 }

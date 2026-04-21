@@ -6,11 +6,11 @@ import effectCreationReducer from '../effectCreation/reducers'
 import exploreCombatantReducer from '../exploreCombatants/reducers'
 
 const reducer = combineReducers({
-  combatantSelectionReducer,
-  combatantCreationReducer,
-  actionCreationReducer,
-  effectCreationReducer,
-  exploreCombatantReducer,
+    combatantSelectionReducer,
+    combatantCreationReducer,
+    actionCreationReducer,
+    effectCreationReducer,
+    exploreCombatantReducer,
 });
 
-export {reducer as default}
+export { reducer as default }

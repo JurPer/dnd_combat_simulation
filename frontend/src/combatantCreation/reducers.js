@@ -1,7 +1,7 @@
 import { combineReducers } from 'redux'
 import * as t from './actionTypes'
-import {setterReducer} from '../common/utils'
-import {SET_ALL_ACTIONS} from '../simulation/actionTypes'
+import { setterReducer } from '../common/utils'
+import { SET_ALL_ACTIONS } from '../simulation/actionTypes'
 
 const allActions = setterReducer([], SET_ALL_ACTIONS);
 const combatantActions = setterReducer([], t.SET_COMBATANT_ACTIONS);
@@ -19,20 +19,20 @@ const combatantCreationMsg = setterReducer("", t.SET_COMBATANT_MSG)
 const dndbeyondURL = setterReducer("", t.SET_DNDBEYOND_URL)
 
 const reducer = combineReducers({
-  allActions,
-  combatantActions,
-  combatantName,
-  combatantHP,
-  combatantAC,
-  combatantProficiency,
-  combatantStrength,
-  combatantDexterity,
-  combatantConstitution,
-  combatantWisdom,
-  combatantIntelligence,
-  combatantCharisma,
-  combatantCreationMsg,
-  dndbeyondURL
+    allActions,
+    combatantActions,
+    combatantName,
+    combatantHP,
+    combatantAC,
+    combatantProficiency,
+    combatantStrength,
+    combatantDexterity,
+    combatantConstitution,
+    combatantWisdom,
+    combatantIntelligence,
+    combatantCharisma,
+    combatantCreationMsg,
+    dndbeyondURL
 })
 
-export {reducer as default}
+export { reducer as default }

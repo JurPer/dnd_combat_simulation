@@ -1,6 +1,6 @@
 import { combineReducers } from 'redux'
 import * as t from './actionTypes'
-import {setterReducer} from '../common/utils'
+import { setterReducer } from '../common/utils'
 
 
 const combatantActions = setterReducer([], t.SET_COMBATANT_ACTIONS);
@@ -19,19 +19,19 @@ const chosenCombatant = setterReducer(null, t.SET_CHOSEN_COMBATANT);
 
 
 const reducer = combineReducers({
-  combatantActions,
-  combatantName,
-  combatantHP,
-  combatantAC,
-  combatantProficiency,
-  combatantStrength,
-  combatantDexterity,
-  combatantConstitution,
-  combatantWisdom,
-  combatantIntelligence,
-  combatantCharisma,
-  combatantCR,
-  chosenCombatant,
+    combatantActions,
+    combatantName,
+    combatantHP,
+    combatantAC,
+    combatantProficiency,
+    combatantStrength,
+    combatantDexterity,
+    combatantConstitution,
+    combatantWisdom,
+    combatantIntelligence,
+    combatantCharisma,
+    combatantCR,
+    chosenCombatant,
 })
 
-export {reducer as default}
+export { reducer as default }

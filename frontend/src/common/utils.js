@@ -3,34 +3,34 @@
  */
 
 export const setterReducer = (initialState, actionType, key) => (state = initialState, action) => {
-  switch(action.type) {
-    case actionType:
-      if (key)
-        return action.payload[key]
-      return action.payload
-    default:
-      return state
-  }
+    switch (action.type) {
+        case actionType:
+            if (key)
+                return action.payload[key]
+            return action.payload
+        default:
+            return state
+    }
 }
 
-export const counterReducer = (actionType) => (state=0, action) => {
-  switch(action.type) {
-    case actionType:
-      return state + 1
-    default:
-      return state
-  }
+export const counterReducer = (actionType) => (state = 0, action) => {
+    switch (action.type) {
+        case actionType:
+            return state + 1
+        default:
+            return state
+    }
 }
 
-export const listReducer = (setAction, addAction) => (state=[], action) => {
-  switch(action.type) {
-    case setAction:
-      return action.payload
-    case addAction:
-      return [...state, action.payload]
-    default:
-      return state
-  }
+export const listReducer = (setAction, addAction) => (state = [], action) => {
+    switch (action.type) {
+        case setAction:
+            return action.payload
+        case addAction:
+            return [...state, action.payload]
+        default:
+            return state
+    }
 }
 
 /*
@@ -42,13 +42,13 @@ export const listReducer = (setAction, addAction) => (state=[], action) => {
 * (item) => ({type: 'SET_ITEM', item: item})
 */
 export const createAction = (type, ...argNames) => {
-  return function(...args) {
-    let action = { type }
-    argNames.forEach((arg, index) => {
-      action[argNames[index]] = args[index]
-    })
-    return action
-  }
+    return function (...args) {
+        let action = { type }
+        argNames.forEach((arg, index) => {
+            action[argNames[index]] = args[index]
+        })
+        return action
+    }
 }
 
 // Generates an action creator that takes one argument passed as 'payload'
